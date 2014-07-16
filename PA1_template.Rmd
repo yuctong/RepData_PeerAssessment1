@@ -2,7 +2,7 @@ Reproducible Research: Peer Assesment 1
 ========================================================
 
 ## 1. Loading and preprocessing the data
-
+The data is loaded from the file activity.csv, which must be located in the working directory/data/ (set up your working directory properly)
 ```{r}
 library(reshape2)
 data<-read.csv("./data/activity.csv",stringsAsFactor=FALSE)
@@ -10,7 +10,7 @@ data$date<-as.Date(data$date)
 ```
 
 ## 2. What is mean total number of steps taken per day?
-
+For this section I have used only the valid data of steps (NAs are filtered out of the data)
 ```{r fig.width=6, fig.height=6}
 daily<-dcast(melt(data,id="date",measure.vars="steps"),date~variable,sum)
 hist(daily$steps, main="Daily Steps Count", xlab="",ylab="Number of Steps", col="steel blue")
@@ -18,15 +18,15 @@ hist(daily$steps, main="Daily Steps Count", xlab="",ylab="Number of Steps", col=
 meanNA <- mean(daily$steps,na.rm=TRUE)
 medianNA <- median(daily$steps,na.rm=TRUE)
 ```
-The mean is: `r meanNA`  
-The median is: `r medianNA`
+The mean total number of steps taken per day is: `r meanNA`,  and the median is: `r medianNA`.
 
 
 ## 3. What is the average daily activity pattern?
-```{r fig.width=6,fig.height=6}
+We see that the average daily activity pattern has almost no steps between the 0h and up to a bit more than 5h, after that the average number of steps increase up to about 200 around the 8h, then the steps decline at an average of about 50 steps to finally decrease at around the 20 hours.
+```{r fig.width=10,fig.height=6}
 intervalavg<- dcast(melt(data,id=c("date","interval"), measure.vars="steps", na.rm=TRUE), interval~variable,mean)
 
-plot(intervalavg$steps,type="l", main="Daily Activity Pattern", ylab="Steps", xlab="Interval",col="steel blue")
+plot(intervalavg$interval,intervalavg$steps,type="l", main="Daily Activity Pattern", ylab="Steps", xlab="Interval",col="steel blue")
 
 ```
 
@@ -34,11 +34,12 @@ plot(intervalavg$steps,type="l", main="Daily Activity Pattern", ylab="Steps", xl
 
 ### 4.1 Total number of missing values in the dataset
 ```{r}
-sum(is.na(data$steps))
+missings<- sum(is.na(data$steps))
 ```
-
+The total number of missing values in the dataset is: `r missings`
 ### 4.2 Fill up the NA values of steps
-I proceed to fill up the NA values of steps with the mean of the interval period, be that 5, 10, 15, etc. creating a new dataset called "datacomplete" that contains the same information of the original dataset.
+I proceed to fill up the NA values of steps with the mean of the interval period, be that 5, 10, 15, etc. creating a new dataset called "datacomplete" that contains the same information of the original dataset.  
+I chose the average per interval to complete the NAs because the average per day would add distortion to the daily activity pattern, particularly in the valley around the 0 to 5 hours.
 
 ```{r fig.width=6,fig.height=6}
 datacomplete<-data
@@ -51,7 +52,7 @@ for (i in 1:nrow(datacomplete)) {
 ```
 
 ### 4.3. Analysis of the missing values
-I create an histogram with the data with the completed NA values of the previous step and calculate the mean and median.
+I create a histogram with the data with the completed NA values of the previous step and calculate the mean and median to compare to the previously calculated without completing the NAs.
 ```{r fig.height=6, fig.width=6}
 dailycomplete<-dcast(melt(datacomplete,id="date",measure.vars="steps"),date~variable,sum)
 hist(dailycomplete$steps, main="Daily Steps Count", xlab="",ylab="Number of Steps", col="dark green")
@@ -65,6 +66,7 @@ The median with completed NAs is: `r mediannoNA`
 The addition of the mean by interval for the missing values from the dataset does not change the mean, however, it does change slightly the median, being the difference between the new and old `r mediannoNA-medianNA` or `r (mediannoNA/medianNA-1)*100`% which is less than 1% making the difference insignificant.
 
 ## 5. Are there differences in activity patterns between weekdays and weekends?
+I proceed to subset add the field of weekend or weekend using the weekdays() formula.
 ```{r}
 datacomplete$day <- weekdays(datacomplete$date)
 datacomplete$weekday <- datacomplete$day
@@ -79,10 +81,13 @@ for (i in 1:nrow(datacomplete)) {
 }
 ```
 
+Then I proceed to make a plot with a loess smooth to review the differences of daily activity pattern between weekday and weekend using ggplot2 library.
 ```{r}
 intervalwkday<- dcast(melt(datacomplete,id=c("date","interval","weekday"), measure.vars="steps"), interval+weekday~variable,mean)
 intervalwkday$weekday<- as.factor(intervalwkday$weekday)
 library(ggplot2)
-qplot(interval,steps,data=intervalwkday, geom="line" )+facet_grid(weekday~.)+geom_smooth(aes(group=1),method="loess")
-
+qplot(interval,steps,data=intervalwkday, geom="line",xlab="interval",ylab="number of steps",main="Daily Activity Pattern by Weekday and Weekend")+facet_grid(weekday~.)+geom_smooth(aes(group=1),method="loess")
 ```
+
+
+After observing the weekday and weekend daily activity patterns we can see that in average the weekday and weekday are different.  During weekdays there is a big momentum around the 8hour and then the pattern is very small around 50 steps. However, during the weekend it is more consistent with what seems an average of around 80 steps throughout the day. Also it seems to start a bit later at around 9hours rather than at around the 5hours during the weekdays.
