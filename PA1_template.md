@@ -38,6 +38,13 @@ plot(intervalavg$interval,intervalavg$steps,type="l", main="Daily Activity Patte
 
 ![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
 
+```r
+maxSteps<- max(intervalavg$steps)
+intervalMax <- intervalavg[intervalavg$steps==maxSteps,1]
+```
+The interval with the maximum number of steps throughout the day is 835 with a total steps of 206.1698
+
+
 ## 4. Imputing missing values
 
 ### 4.1 Total number of missing values in the dataset
@@ -95,13 +102,18 @@ for (i in 1:nrow(datacomplete)) {
         datacomplete[i,5] = "Weekday"
     }
 }
+intervalwkday<- dcast(melt(datacomplete,id=c("date","interval","weekday"), measure.vars="steps"), interval+weekday~variable,mean)
+intervalwkday$weekday<- as.factor(intervalwkday$weekday)
+
+a<-intervalwkday[intervalwkday$weekday=="Weekday",]
+a$steps<-intervalwkday[intervalwkday$weekday=="Weekday",3]-intervalwkday[intervalwkday$weekday=="Weekend",3]
+a$weekday<-"Weekday-Weekend"
+intervalwkday<-rbind(intervalwkday,a)
 ```
 
 Then I proceed to make a plot with a loess smooth to review the differences of daily activity pattern between weekday and weekend using ggplot2 library.
 
 ```r
-intervalwkday<- dcast(melt(datacomplete,id=c("date","interval","weekday"), measure.vars="steps"), interval+weekday~variable,mean)
-intervalwkday$weekday<- as.factor(intervalwkday$weekday)
 library(ggplot2)
 qplot(interval,steps,data=intervalwkday, geom="line",xlab="interval",ylab="number of steps",main="Daily Activity Pattern by Weekday and Weekend")+facet_grid(weekday~.)+geom_smooth(aes(group=1),method="loess")
 ```
