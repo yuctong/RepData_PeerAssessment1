@@ -91,3 +91,9 @@ qplot(interval,steps,data=intervalwkday, geom="line",xlab="interval",ylab="numbe
 
 
 After observing the weekday and weekend daily activity patterns we can see that in average the weekday and weekday are different.  During weekdays there is a big momentum around the 8hour and then the pattern is very small around 50 steps. However, during the weekend it is more consistent with what seems an average of around 80 steps throughout the day. Also it seems to start a bit later at around 9hours rather than at around the 5hours during the weekdays.
+
+## Environment of analysis
+This work was produced using the following:
+```{r}
+sessionInfo()
+```

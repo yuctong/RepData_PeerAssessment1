@@ -110,3 +110,34 @@ qplot(interval,steps,data=intervalwkday, geom="line",xlab="interval",ylab="numbe
 
 
 After observing the weekday and weekend daily activity patterns we can see that in average the weekday and weekday are different.  During weekdays there is a big momentum around the 8hour and then the pattern is very small around 50 steps. However, during the weekend it is more consistent with what seems an average of around 80 steps throughout the day. Also it seems to start a bit later at around 9hours rather than at around the 5hours during the weekdays.
+
+## Environment of analysis
+This work was produced using the following:
+
+```r
+sessionInfo()
+```
+
+```
+## R version 3.1.0 (2014-04-10)
+## Platform: i386-w64-mingw32/i386 (32-bit)
+## 
+## locale:
+## [1] LC_COLLATE=English_United States.1252 
+## [2] LC_CTYPE=English_United States.1252   
+## [3] LC_MONETARY=English_United States.1252
+## [4] LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.1252    
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] ggplot2_1.0.0 reshape2_1.4  knitr_1.6    
+## 
+## loaded via a namespace (and not attached):
+##  [1] colorspace_1.2-4 digest_0.6.4     evaluate_0.5.5   formatR_0.10    
+##  [5] grid_3.1.0       gtable_0.1.2     labeling_0.2     MASS_7.3-33     
+##  [9] munsell_0.4.2    plyr_1.8.1       proto_0.3-10     Rcpp_0.11.1     
+## [13] scales_0.2.4     stringr_0.6.2    tools_3.1.0
+```
