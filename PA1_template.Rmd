@@ -19,7 +19,7 @@ meanNA <- mean(daily$steps,na.rm=TRUE)
 medianNA <- median(daily$steps,na.rm=TRUE)
 ```
 The mean total number of steps taken per day is: `r meanNA`,  and the median is: `r medianNA`.
-
+ 
 
 ## 3. What is the average daily activity pattern?
 We see that the average daily activity pattern has almost no steps between the 0h and up to a bit more than 5h, after that the average number of steps increase up to about 200 around the 8h, then the steps decline at an average of about 50 steps to finally decrease at around the 20 hours.
